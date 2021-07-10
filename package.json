@@ -5,7 +5,7 @@
   "description": "Личный проект «Кексобукинг» от HTML Academy",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pavel-tagiltsev/keksobooking.git"
+    "url": "git@github.com:pavel-tagiltsev/keksobooking.git"
   },
   "bugs": {
     "url": "https://github.com/pavel-tagiltsev/keksobooking/issues"
