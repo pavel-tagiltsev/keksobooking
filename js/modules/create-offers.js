@@ -1,4 +1,4 @@
-import { getRandomPositiveFloat, getRandomPositiveNumber} from '../util/util.js';
+import {getRandomPositiveFloat, getRandomPositiveNumber} from '../util/util.js';
 
 const TYPES = [
   'palace',
@@ -98,6 +98,6 @@ const createOffer = function(index) {
   };
 }
 
-const data = new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
+const createOffers = () => new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
 
-export {data};
+export {createOffers};

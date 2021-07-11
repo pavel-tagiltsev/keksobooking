@@ -1,4 +1,4 @@
-import {data} from './modules/data.js';
+import {createOffers} from './modules/create-offers.js';
 import {renderPopups} from './modules/render-popups.js';
 
-renderPopups(data);
+renderPopups(createOffers());
