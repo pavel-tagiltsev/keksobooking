@@ -1,4 +1,4 @@
-import { getRandomPositiveFloat, getRandomPositiveNumber} from './util.js';
+import { getRandomPositiveFloat, getRandomPositiveNumber} from '../util/util.js';
 
 const TYPES = [
   'palace',
@@ -71,7 +71,7 @@ const getRandomArrayElement = (arr) => {
 }
 
 const getArrayRandomLength = (arr) => {
-  return arr.slice(0, getRandomPositiveNumber(1, arr.length - 1));
+  return arr.slice(0, getRandomPositiveNumber(1, arr.length));
 }
 
 const createOffer = function(index) {
@@ -79,7 +79,7 @@ const createOffer = function(index) {
 
   return {
     author: {
-      avatar: `img/avatars/user${addZeroToNumbersLessThanTen(index + 1)}`,
+      avatar: `img/avatars/user${addZeroToNumbersLessThanTen(index + 1)}.png`,
     },
     offer: {
       title: 'Загаловок',
@@ -98,6 +98,6 @@ const createOffer = function(index) {
   };
 }
 
-const rundomOffers = new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
+const data = new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
 
-export {rundomOffers};
+export {data};
