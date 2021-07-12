@@ -14,101 +14,93 @@ const translateType = (type) => {
 }
 
 const renderPopups = (data) => {
-  const map = document.querySelector('#map-canvas');
   const popupTemplate = document.querySelector('#card').content;
   const popup = popupTemplate.querySelector('.popup');
-  const fragment = document.createDocumentFragment();
+  const clonePopup = popup.cloneNode(true);
 
-  data.forEach(item => {
-    const clonePopup = popup.cloneNode(true);
+  const avatar = clonePopup.querySelector('.popup__avatar');
+  const title = clonePopup.querySelector('.popup__title');
+  const adress = clonePopup.querySelector('.popup__text--address');
+  const price = clonePopup.querySelector('.popup__text--price');
+  const type = clonePopup.querySelector('.popup__type');
+  const capacity = clonePopup.querySelector('.popup__text--capacity');
+  const time = clonePopup.querySelector('.popup__text--time');
+  const description = clonePopup.querySelector('.popup__description');
 
-    const avatar = clonePopup.querySelector('.popup__avatar');
-    const title = clonePopup.querySelector('.popup__title');
-    const adress = clonePopup.querySelector('.popup__text--address');
-    const price = clonePopup.querySelector('.popup__text--price');
-    const type = clonePopup.querySelector('.popup__type');
-    const capacity = clonePopup.querySelector('.popup__text--capacity');
-    const time = clonePopup.querySelector('.popup__text--time');
-    const description = clonePopup.querySelector('.popup__description');
+  const offer = data.offer;
+  const author = data.author;
 
-    const offer = item.offer;
-    const author = item.author;
+  avatar.src = author.avatar;
 
-    avatar.src = author.avatar;
+  (offer.title) ?
+    title.textContent = offer.title :
+    title.remove();
 
-    (offer.title) ?
-      title.textContent = offer.title :
-      title.remove();
+  (offer.adress) ?
+    adress.textContent = offer.adress :
+    adress.remove();
 
-    (offer.adress) ?
-      adress.textContent = offer.adress :
-      adress.remove();
+  (offer.price) ?
+    price.textContent = offer.price + ' ₽/ночь' :
+    price.remove();
 
-    (offer.price) ?
-      price.textContent = offer.price + ' ₽/ночь' :
-      price.remove();
+  (offer.type) ?
+    type.textContent = translateType(offer.type) :
+    type.remove();
 
-    (offer.type) ?
-      type.textContent = translateType(offer.type) :
-      type.remove();
+  (offer.rooms && offer.guests) ?
+    capacity.textContent = `${offer.rooms} комнаты для ${offer.guests} гостей` :
+    capacity.remove();
 
-    (offer.rooms && offer.guests) ?
-      capacity.textContent = `${offer.rooms} комнаты для ${offer.guests} гостей` :
-      capacity.remove();
+  (offer.checkin && offer.checkout) ?
+    time.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` :
+    time.remove();
 
-    (offer.checkin && offer.checkout) ?
-      time.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` :
-      time.remove();
+  (offer.description) ?
+    description.textContent = offer.description :
+    description.remove();
 
-    (offer.description) ?
-      description.textContent = offer.description :
-      description.remove();
+  const featureList = clonePopup.querySelector('.popup__features');
+  const featureItem = clonePopup.querySelector('.popup__feature');
 
-    const featureList = clonePopup.querySelector('.popup__features');
-    const featureItem = clonePopup.querySelector('.popup__feature');
+  const addFeatures = (availableFeatures) => {
+    const fragment = document.createDocumentFragment();
+    featureList.innerHTML = '';
 
-    const addFeatures = (availableFeatures) => {
-      const fragment = document.createDocumentFragment();
-      featureList.innerHTML = '';
+    availableFeatures.forEach(availableFeature => {
+      const featureItemClone = featureItem.cloneNode(true);
+      featureItemClone.className = `popup__feature popup__feature--${availableFeature}`;
+      fragment.appendChild(featureItemClone);
+    });
 
-      availableFeatures.forEach(availableFeature => {
-        const featureItemClone = featureItem.cloneNode(true);
-        featureItemClone.className = `popup__feature popup__feature--${availableFeature}`;
-        fragment.appendChild(featureItemClone);
-      });
+    featureList.appendChild(fragment);
+  }
 
-      featureList.appendChild(fragment);
-    }
+  (offer.features) ?
+    addFeatures(offer.features) :
+    featureList.remove();
 
-    (offer.features) ?
-      addFeatures(offer.features) :
-      featureList.remove();
+  const photoList = clonePopup.querySelector('.popup__photos');
+  const photoItem = clonePopup.querySelector('.popup__photo');
 
-    const photoList = clonePopup.querySelector('.popup__photos');
-    const photoItem = clonePopup.querySelector('.popup__photo');
+  const addPhotos = (photoUrls) => {
+    const fragment = document.createDocumentFragment();
+    photoList.innerHTML = '';
 
-    const addPhotos = (photoUrls) => {
-      const fragment = document.createDocumentFragment();
-      photoList.innerHTML = '';
+    photoUrls.forEach(photoUrl => {
+      const photoItemClone = photoItem.cloneNode(true);
+      photoItemClone.src = photoUrl;
+      fragment.appendChild(photoItemClone);
+    });
 
-      photoUrls.forEach(photoUrl => {
-        const photoItemClone = photoItem.cloneNode(true);
-        photoItemClone.src = photoUrl;
-        fragment.appendChild(photoItemClone);
-      });
+    photoList.appendChild(fragment);
+  }
 
-      photoList.appendChild(fragment);
-    }
+  (offer.photos) ?
+    addPhotos(offer.photos) :
+    photoList.remove();
 
-    (offer.photos) ?
-      addPhotos(offer.photos) :
-      photoList.remove();
-
-
-    fragment.appendChild(clonePopup);
-  });
-
-  map.appendChild(fragment);
+  return clonePopup;
 }
 
 export {renderPopups};
