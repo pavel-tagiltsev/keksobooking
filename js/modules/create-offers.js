@@ -44,10 +44,10 @@ const MIN_PRICE = 1000;
 const MAX_PRICE = 100000;
 
 const MIN_ROOMS = 1;
-const MAX_ROOMS = 5;
+const MAX_ROOMS = 3;
 
-const MIN_GUESTS = 1;
-const MAX_GUESTS = 5;
+const MIN_GUESTS = 0;
+const MAX_GUESTS = 2;
 
 const NUMBER_OF_OFFERS = 8;
 
