@@ -240,6 +240,7 @@ rooms.addEventListener('change', evt => {
   }
 });
 
+//Отправка формы
 const sendData = (url, onSuccess, onFail, body) => {
   fetch(url, {
     method: 'POST',
@@ -253,3 +254,12 @@ const sendData = (url, onSuccess, onFail, body) => {
     })
     .catch(onFail);
 };
+
+const form = document.querySelector('.ad-form');
+
+form.addEventListener('submit', evt => {
+  evt.preventDefault();
+
+  sendData('https://22.javascript.pages.academy/keksobooking', () => {
+    alert('Все ок!')}, () => {alert('Все не ок!')}, new FormData(form))
+});
