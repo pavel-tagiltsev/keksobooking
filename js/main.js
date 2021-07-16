@@ -1,60 +1,18 @@
-import {createOffers} from './modules/create-offers.js';
-import {renderPopups} from './modules/render-popups.js';
+import {
+  renderPopups
+} from './modules/render-popups.js';
 
-const offers = createOffers();
-
-const LAT_START = 35.68283;
-const LNG_START = 139.75945;
-
-const renderPins = (arr) => {
-  arr.forEach(offer => {
-    L.marker([offer.offer.location.x, offer.offer.location.y]).addTo(map)
-      .bindPopup(renderPopups(offer));
-  });
-}
-
-const map = L.map('map-canvas');
-
-map.on('load', () => {
-  const myIcon = L.icon({
-    iconUrl: '../leaflet/images/main.png',
-    iconSize: [38, 60],
-    iconAnchor: [19, 60],
-  });
-  const main = L.marker([LAT_START, LNG_START], {
-    icon: myIcon,
-    draggable: true,
-  }).addTo(map);
-
-  renderPins(offers);
-
-  const adress = document.querySelector('#address');
-  main.on('move', function(evt) {
-    adress.value = `${evt.latlng.lat.toFixed(5)} : ${evt.latlng.lng.toFixed(5)}`;
-  });
-
-  adress.value = `${main._latlng.lat.toFixed(5)} : ${main._latlng.lng.toFixed(5)}`;
-});
-
-map.setView([LAT_START, LNG_START], 13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
-
-window.onload = () => {
-  const disabledFieldsets= document.querySelectorAll('fieldset:disabled');
-  const disabledSelects= document.querySelectorAll('select:disabled');
-  const mainFilter = document.querySelector('.map__filters');
-  const mainForm = document.querySelector('.ad-form');
-
-  mainFilter.classList.remove('map__filters--disabled');
-  mainForm.classList.remove('ad-form--disabled');
-  disabledSelects.forEach(element => element.removeAttribute('disabled'));
-  disabledFieldsets.forEach(element => element.removeAttribute('disabled'));
-}
-
-
+const getData = (url, onSuccess, onFail) => {
+  fetch(url)
+    .then((response => {
+      if (response.ok) {
+        return response.json();
+      }
+      onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
+    }))
+    .then(onSuccess)
+    .catch(onFail);
+};
 
 // Фильтрация меток на карте
 const filter = document.querySelector('.map__filters');
@@ -80,47 +38,113 @@ const deleteActivePinas = () => {
   });
 }
 
-filter.addEventListener('input', () => {
-  const type = typeFilter.value;
-  const price = priceFilter.value;
-  const rooms = roomsFilter.value;
-  const guests = guestsFilter.value;
-  const featurs = [...filter.querySelectorAll('#housing-features input:checked')].map(checkbox => checkbox.value);
+//Инициализация карты
+const LAT_START = 35.68283;
+const LNG_START = 139.75945;
 
-  const getRightPrice = (a) => {
-    if (price === 'middle') {
-      return a.offer.price > 10000 && a.offer.price < 50000;
-    }
-    if (price === 'low') {
-      return a.offer.price <= 10000;
-    }
-    if (price === 'high') {
-      return a.offer.price >= 50000;
-    }
-  }
+const renderPins = (arr) => {
+  arr.forEach(offer => {
+    L.marker([offer.location.lat, offer.location.lng]).addTo(map)
+      .bindPopup(renderPopups(offer));
+  });
+}
 
-  const getRightFeatures = (arr, arr2) => {
-    let arrCheck = arr.map(item => {
-      return arr2.includes(item);
-    })
+const map = L.map('map-canvas');
 
-    return (arrCheck.includes(false)) ? false : true;
-  }
 
-  filteredOffers = offers.filter(offer => (
-    (type === 'any' || offer.offer.type === type) &&
-    (rooms === 'any' || offer.offer.rooms === +rooms) &&
-    (price === 'any' || getRightPrice(offer)) &&
-    (guests === 'any' || offer.offer.guests === +guests) &&
-    (featurs === 'any' || getRightFeatures(featurs, offer.offer.features))
-  ));
+map.on('load', () => {
 
-  map.closePopup();
-  deleteActivePinas();
-  renderPins(filteredOffers)
+  const myIcon = L.icon({
+    iconUrl: '../leaflet/images/main.png',
+    iconSize: [38, 60],
+    iconAnchor: [19, 60],
+  });
+  const main = L.marker([LAT_START, LNG_START], {
+    icon: myIcon,
+    draggable: true,
+  }).addTo(map);
+
+  getData('https://22.javascript.pages.academy/keksobooking/data', (response) => {
+    renderPins(response);
+
+    const mainFilter = document.querySelector('.map__filters');
+    mainFilter.classList.remove('map__filters--disabled');
+
+    const disabledFieldsets = document.querySelectorAll('.map__filters fieldset:disabled');
+    const disabledSelects = document.querySelectorAll('.map__filters select:disabled');
+
+    disabledSelects.forEach(element => element.removeAttribute('disabled'));
+    disabledFieldsets.forEach(element => element.removeAttribute('disabled'));
+
+    //Продолжение фильтрации
+    filter.addEventListener('input', () => {
+      const type = typeFilter.value;
+      const price = priceFilter.value;
+      const rooms = roomsFilter.value;
+      const guests = guestsFilter.value;
+      const featurs = [...filter.querySelectorAll('#housing-features input:checked')].map(checkbox => checkbox.value);
+
+      const getRightPrice = (a) => {
+        if (price === 'middle') {
+          return a.offer.price > 10000 && a.offer.price < 50000;
+        }
+        if (price === 'low') {
+          return a.offer.price <= 10000;
+        }
+        if (price === 'high') {
+          return a.offer.price >= 50000;
+        }
+      }
+
+      const getRightFeatures = (arr, arr2) => {
+        let arrCheck = arr.map(item => {
+          return arr2.includes(item);
+        })
+
+        return (arrCheck.includes(false)) ? false : true;
+      }
+
+      filteredOffers = response.filter(offer => (
+        (type === 'any' || offer.offer.type === type) &&
+        (rooms === 'any' || offer.offer.rooms === +rooms) &&
+        (price === 'any' || getRightPrice(offer)) &&
+        (guests === 'any' || offer.offer.guests === +guests) &&
+        (featurs === 'any' || getRightFeatures(featurs, offer.offer.features))
+      ));
+
+      map.closePopup();
+      deleteActivePinas();
+      renderPins(filteredOffers)
+    });
+  }, (err) => {
+    alert(err);
+  })
+
+  const adress = document.querySelector('#address');
+  main.on('move', function (evt) {
+    adress.value = `${evt.latlng.lat.toFixed(5)} : ${evt.latlng.lng.toFixed(5)}`;
+  });
+
+  adress.value = `${main._latlng.lat.toFixed(5)} : ${main._latlng.lng.toFixed(5)}`;
+
+  const disabledFieldsets = document.querySelectorAll('.ad-form fieldset:disabled');
+  const disabledSelects = document.querySelectorAll('.ad-form select:disabled');
+
+  disabledSelects.forEach(element => element.removeAttribute('disabled'));
+  disabledFieldsets.forEach(element => element.removeAttribute('disabled'));
+
+  const mainForm = document.querySelector('.ad-form');
+  mainForm.classList.remove('ad-form--disabled');
 });
 
+map.setView([LAT_START, LNG_START], 9);
 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}).addTo(map);
+
+
+// Работа с ограничениями на форме
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 
@@ -215,3 +239,17 @@ rooms.addEventListener('change', evt => {
     });
   }
 });
+
+const sendData = (url, onSuccess, onFail, body) => {
+  fetch(url, {
+    method: 'POST',
+    body,
+  })
+    .then((response) => {
+      if (response.ok) {
+        return onSuccess();
+      }
+      onFail();
+    })
+    .catch(onFail);
+};
