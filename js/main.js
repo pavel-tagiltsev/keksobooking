@@ -8,7 +8,7 @@ const getData = (url, onSuccess, onFail) => {
       if (response.ok) {
         return response.json();
       }
-      onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
+      // onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
     }))
     .then(onSuccess)
     .catch(onFail);
@@ -50,7 +50,7 @@ const renderPins = (arr) => {
 }
 
 const map = L.map('map-canvas');
-
+let main;
 
 map.on('load', () => {
 
@@ -59,7 +59,7 @@ map.on('load', () => {
     iconSize: [38, 60],
     iconAnchor: [19, 60],
   });
-  const main = L.marker([LAT_START, LNG_START], {
+  main = L.marker([LAT_START, LNG_START], {
     icon: myIcon,
     draggable: true,
   }).addTo(map);
@@ -116,8 +116,39 @@ map.on('load', () => {
       deleteActivePinas();
       renderPins(filteredOffers)
     });
-  }, (err) => {
-    alert(err);
+  }, () => {
+    const errorTemplate = document.querySelector('#error');
+    const errorModal = errorTemplate.content;
+    const errorModalClone = errorModal.cloneNode(true);
+    const text = errorModalClone.querySelector('p');
+    text.textContent = 'Ошибка при загрузке данных';
+    const button = errorModalClone.querySelector('button');
+    button.textContent = 'Повторите попытку позже';
+    const main = document.querySelector('main');
+
+    main.appendChild(errorModalClone);
+
+    const error = document.querySelector('.error');
+
+    const onEscPress = (evt) => {
+      if (evt.key === 'Escape') {
+        error.remove();
+        window.removeEventListener('keydown', onEscPress);
+        document.body.style.overflow = '';
+      }
+    }
+
+    const oErrorClick = (evt) => {
+      if (evt.currentTarget === error) {
+        error.remove();
+        error.removeEventListener('click', oErrorClick);
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onEscPress);
+    error.addEventListener('click', oErrorClick);
   })
 
   const adress = document.querySelector('#address');
@@ -197,18 +228,21 @@ timeout.addEventListener('change', evt => {
   });
 });
 
-
 const rooms = document.querySelector('#room_number');
 const capacities = document.querySelectorAll('#capacity option');
 
-capacities.forEach(item => {
-  if (item.value !== '1') {
-    item.disabled = true;
-  } else {
-    item.selected = true;
-    item.disabled = false;
-  }
-});
+const copacityReset = () => {
+  capacities.forEach(item => {
+    if (item.value !== '1') {
+      item.disabled = true;
+    } else {
+      item.selected = true;
+      item.disabled = false;
+    }
+  });
+}
+
+copacityReset();
 
 const rightFilter = (evt) => {
   if (evt.target.value === '1') {
@@ -277,64 +311,97 @@ const sendData = (url, onSuccess, onFail, body) => {
 
 const form = document.querySelector('.ad-form');
 
+const showSuccessModal = () => {
+  const successTemplate = document.querySelector('#success');
+  const successModal = successTemplate.content;
+  const successModalClone = successModal.cloneNode(true);
+  const main = document.querySelector('main');
+
+  main.appendChild(successModalClone);
+  const success = document.querySelector('.success');
+
+  const onEscPress = (evt) => {
+    if (evt.key === 'Escape') {
+      success.remove();
+      window.removeEventListener('keydown', onEscPress);
+      document.body.style.overflow = '';
+    }
+  }
+
+  const onSuccessClick = (evt) => {
+    if (evt.currentTarget === success) {
+      success.remove();
+      success.removeEventListener('click', onSuccessClick);
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.body.style.overflow = 'hidden';
+  window.addEventListener('keydown', onEscPress);
+  success.addEventListener('click', onSuccessClick);
+  onReset();
+}
+
+function showErrorModal() {
+  const errorTemplate = document.querySelector('#error');
+  const errorModal = errorTemplate.content;
+  const errorModalClone = errorModal.cloneNode(true);
+  const main = document.querySelector('main');
+
+  main.appendChild(errorModalClone);
+
+  const error = document.querySelector('.error');
+
+  const onEscPress = (evt) => {
+    if (evt.key === 'Escape') {
+      error.remove();
+      window.removeEventListener('keydown', onEscPress);
+      document.body.style.overflow = '';
+    }
+  }
+
+  const oErrorClick = (evt) => {
+    if (evt.currentTarget === error) {
+      error.remove();
+      error.removeEventListener('click', oErrorClick);
+      document.body.style.overflow = '';
+    }
+  }
+
+  document.body.style.overflow = 'hidden';
+  window.addEventListener('keydown', onEscPress);
+  error.addEventListener('click', oErrorClick);
+}
+
 form.addEventListener('submit', evt => {
   evt.preventDefault();
 
-  const showSuccessModal = () => {
-    const successTemplate = document.querySelector('#success');
-    const successModal = successTemplate.content;
-    const successModalClone = successModal.cloneNode(true);
-    const main = document.querySelector('main');
-
-    main.appendChild(successModalClone);
-    const success = document.querySelector('.success');
-
-    const onEscPress = (evt) => {
-      if (evt.key === 'Escape') {
-        success.remove();
-        window.removeEventListener('keydown', onEscPress);
-      }
-    }
-
-    const onSuccessClick = (evt) => {
-      if (evt.currentTarget === success) {
-        success.remove();
-        success.removeEventListener('click', onSuccessClick);
-      }
-    }
-
-    window.addEventListener('keydown', onEscPress);
-    success.addEventListener('click', onSuccessClick);
-
-  }
-
-  const showErrorModal = () => {
-    const errorTemplate = document.querySelector('#error');
-    const errorModal = errorTemplate.content;
-    const errorModalClone = errorModal.cloneNode(true);
-    const main = document.querySelector('main');
-
-    main.appendChild(errorModalClone);
-
-    const error = document.querySelector('.error');
-    const errorButton = error.querySelector('.error__button');
-
-    const onEscPress = (evt) => {
-      if (evt.key === 'Escape') {
-        error.remove();
-        window.removeEventListener('keydown', onEscPress);
-      }
-    }
-
-    const onErrorButtonClick = (evt) => {
-      evt.preventDefault();
-      error.remove();
-      errorButton.removeEventListener('click', onErrorButtonClick);
-    }
-
-    window.addEventListener('keydown', onEscPress);
-    errorButton.addEventListener('click', onErrorButtonClick);
-  }
-
   sendData('https://22.javascript.pages.academy/keksobooking', showSuccessModal, showErrorModal, new FormData(form));
 });
+
+
+//reset
+const reset = document.querySelector('.ad-form__reset');
+
+function onReset() {
+  price.placeholder = 'мин. 1 000';
+  price.min = '1000';
+
+  filter.reset();
+  form.reset();
+  copacityReset();
+  map.closePopup();
+  deleteActivePinas();
+  getData('https://22.javascript.pages.academy/keksobooking/data', (response) => {
+    renderPins(response);
+  });
+  main.setLatLng([LAT_START, LNG_START]);
+}
+
+
+reset.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  onReset();
+});
+
+
