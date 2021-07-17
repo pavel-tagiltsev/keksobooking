@@ -49,6 +49,14 @@ const renderPins = (arr) => {
   });
 }
 
+function debounce(callback, delay) {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(callback, delay);
+  }
+}
+
 const map = L.map('map-canvas');
 let main;
 
@@ -77,7 +85,7 @@ map.on('load', () => {
     disabledFieldsets.forEach(element => element.removeAttribute('disabled'));
 
     //Продолжение фильтрации
-    filter.addEventListener('input', () => {
+    filter.addEventListener('input', debounce(() => {
       const type = typeFilter.value;
       const price = priceFilter.value;
       const rooms = roomsFilter.value;
@@ -114,8 +122,8 @@ map.on('load', () => {
 
       map.closePopup();
       deleteActivePinas();
-      renderPins(filteredOffers)
-    });
+      renderPins(filteredOffers);
+    }, 500));
   }, () => {
     const errorTemplate = document.querySelector('#error');
     const errorModal = errorTemplate.content;
@@ -297,9 +305,9 @@ rooms.addEventListener('change', evt => {
 //Отправка формы
 const sendData = (url, onSuccess, onFail, body) => {
   fetch(url, {
-    method: 'POST',
-    body,
-  })
+      method: 'POST',
+      body,
+    })
     .then((response) => {
       if (response.ok) {
         return onSuccess();
@@ -403,5 +411,3 @@ reset.addEventListener('click', (evt) => {
   evt.preventDefault();
   onReset();
 });
-
-
