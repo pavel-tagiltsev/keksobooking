@@ -148,24 +148,27 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const type = document.querySelector('#type');
 const price = document.querySelector('#price');
 
+price.placeholder = 'мин. 1 000';
+price.min = '1000';
+
 type.addEventListener('change', evt => {
   if (evt.target.value === 'bungalow') {
-    price.placeholder = '0';
+    price.placeholder = 'мин. 0';
     price.min = '0';
     return;
   }
   if (evt.target.value === 'flat') {
-    price.placeholder = '1 000';
+    price.placeholder = 'мин. 1 000';
     price.min = '1000';
     return;
   }
   if (evt.target.value === 'house') {
-    price.placeholder = '5 000';
+    price.placeholder = 'мин. 5 000';
     price.min = '5000';
     return;
   }
   if (evt.target.value === 'palace') {
-    price.placeholder = '10 000';
+    price.placeholder = 'мин. 10 000';
     price.min = '10000';
     return;
   }
@@ -198,13 +201,23 @@ timeout.addEventListener('change', evt => {
 const rooms = document.querySelector('#room_number');
 const capacities = document.querySelectorAll('#capacity option');
 
-rooms.addEventListener('change', evt => {
+capacities.forEach(item => {
+  if (item.value !== '1') {
+    item.disabled = true;
+  } else {
+    item.selected = true;
+    item.disabled = false;
+  }
+});
+
+const rightFilter = (evt) => {
   if (evt.target.value === '1') {
     capacities.forEach(item => {
       if (item.value !== evt.target.value) {
-        item.style.display = 'none';
+        item.disabled = true;
       } else {
-        item.style.display = 'block';
+        item.selected = true;
+        item.disabled = false;
       }
     });
   }
@@ -212,9 +225,10 @@ rooms.addEventListener('change', evt => {
   if (evt.target.value === '100') {
     capacities.forEach(item => {
       if (item.value !== '0') {
-        item.style.display = 'none';
+        item.disabled = true;
       } else {
-        item.style.display = 'block';
+        item.selected = true;
+        item.disabled = false;
       }
     });
   }
@@ -222,9 +236,10 @@ rooms.addEventListener('change', evt => {
   if (evt.target.value === '3') {
     capacities.forEach(item => {
       if (item.value === '0') {
-        item.style.display = 'none';
+        item.disabled = true;
       } else {
-        item.style.display = 'block';
+        item.selected = true;
+        item.disabled = false;
       }
     });
   }
@@ -232,12 +247,17 @@ rooms.addEventListener('change', evt => {
   if (evt.target.value === '2') {
     capacities.forEach(item => {
       if (item.value === '0' || item.value === '3') {
-        item.style.display = 'none';
+        item.disabled = true;
       } else {
-        item.style.display = 'block';
+        item.selected = true;
+        item.disabled = false;
       }
     });
   }
+}
+
+rooms.addEventListener('change', evt => {
+  rightFilter(evt);
 });
 
 //Отправка формы
@@ -260,6 +280,61 @@ const form = document.querySelector('.ad-form');
 form.addEventListener('submit', evt => {
   evt.preventDefault();
 
-  sendData('https://22.javascript.pages.academy/keksobooking', () => {
-    alert('Все ок!')}, () => {alert('Все не ок!')}, new FormData(form))
+  const showSuccessModal = () => {
+    const successTemplate = document.querySelector('#success');
+    const successModal = successTemplate.content;
+    const successModalClone = successModal.cloneNode(true);
+    const main = document.querySelector('main');
+
+    main.appendChild(successModalClone);
+    const success = document.querySelector('.success');
+
+    const onEscPress = (evt) => {
+      if (evt.key === 'Escape') {
+        success.remove();
+        window.removeEventListener('keydown', onEscPress);
+      }
+    }
+
+    const onSuccessClick = (evt) => {
+      if (evt.currentTarget === success) {
+        success.remove();
+        success.removeEventListener('click', onSuccessClick);
+      }
+    }
+
+    window.addEventListener('keydown', onEscPress);
+    success.addEventListener('click', onSuccessClick);
+
+  }
+
+  const showErrorModal = () => {
+    const errorTemplate = document.querySelector('#error');
+    const errorModal = errorTemplate.content;
+    const errorModalClone = errorModal.cloneNode(true);
+    const main = document.querySelector('main');
+
+    main.appendChild(errorModalClone);
+
+    const error = document.querySelector('.error');
+    const errorButton = error.querySelector('.error__button');
+
+    const onEscPress = (evt) => {
+      if (evt.key === 'Escape') {
+        error.remove();
+        window.removeEventListener('keydown', onEscPress);
+      }
+    }
+
+    const onErrorButtonClick = (evt) => {
+      evt.preventDefault();
+      error.remove();
+      errorButton.removeEventListener('click', onErrorButtonClick);
+    }
+
+    window.addEventListener('keydown', onEscPress);
+    errorButton.addEventListener('click', onErrorButtonClick);
+  }
+
+  sendData('https://22.javascript.pages.academy/keksobooking', showSuccessModal, showErrorModal, new FormData(form));
 });
