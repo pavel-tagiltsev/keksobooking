@@ -14,4 +14,12 @@ function getRandomPositiveNumber (min, max) {
   return Math.floor(result);
 }
 
-export {getRandomPositiveFloat, getRandomPositiveNumber};
+function debounce(callback, delay) {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(callback, delay);
+  }
+}
+
+export {getRandomPositiveFloat, getRandomPositiveNumber, debounce};
