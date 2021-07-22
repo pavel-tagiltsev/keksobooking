@@ -1,14 +1,9 @@
 import './modules/map.js';
+import './modules/form.js';
 
 import {sendData} from './modules/api.js';
-import setFormValidation from './modules/set-form-validation.js';
 import {showModal} from './modules/show-modal.js';
 
-//Инициализация карты
-
-
-// Работа с ограничениями на форме
-setFormValidation();
 
 //Отправка формы
 
