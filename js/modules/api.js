@@ -10,7 +10,7 @@ const getData = (url, onSuccess, onFail) => {
     .catch(onFail);
 };
 
-const sendData = (url, onSuccess, onFail, body) => {
+const postData = (url, onSuccess, onFail, body) => {
   fetch(url, {
     method: 'POST',
     body,
@@ -24,4 +24,4 @@ const sendData = (url, onSuccess, onFail, body) => {
     .catch(onFail);
 };
 
-export {getData, sendData};
+export {getData, postData};

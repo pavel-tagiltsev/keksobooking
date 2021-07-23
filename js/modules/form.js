@@ -1,11 +1,14 @@
-const type = document.querySelector('#type');
-const price = document.querySelector('#price');
-const timein = document.querySelector('#timein');
-const timeout = document.querySelector('#timeout');
-const rooms = document.querySelector('#room_number');
-const capacity = document.querySelector('#capacity');
-const capacities = document.querySelectorAll('#capacity option');
+import {postData} from './api.js';
+import {showModal} from './show-modal.js';
 
+const POST_URL = 'https://22.javascript.pages.academy/keksobooking';
+
+const CapacityOptions = {
+  1: [1],
+  2: [1,2],
+  3: [1,2,3],
+  100: [0],
+}
 
 const MinPrices = {
   'bungalow': 0,
@@ -14,51 +17,73 @@ const MinPrices = {
   'palace': 10000,
 }
 
-const onTypeChange = () => {
-  const minPrice = MinPrices[type.value];
+const adForm = document.querySelector('.ad-form');
+const typeSelect = adForm.querySelector('#type');
+const price = adForm.querySelector('#price');
+const timeInSelect = adForm.querySelector('#timein');
+const timeOutSelect = adForm.querySelector('#timeout');
+const numberOfRoomsSelect = adForm.querySelector('#room_number');
+const capacitySelect = adForm.querySelector('#capacity');
+
+const onTypeSelectChange = () => {
+  const minPrice = MinPrices[typeSelect.value];
   const setTextHint = (minPrice) => `мин. ${minPrice}`;
 
   price.placeholder = setTextHint(minPrice);
   price.min = minPrice;
 };
 
-const onTimeinChange = () => {
-  timeout.value = timein.value;
+const onTimeInSelectChange = () => {
+  timeOutSelect.value = timeInSelect.value;
 };
 
-const onTimeoutChange = () => {
-  timein.value = timeout.value;
+const onTimeOutSelectChange = () => {
+  timeInSelect.value = timeOutSelect.value;
 };
 
-const roomCapacities = {
-  1: [1],
-  2: [1,2],
-  3: [1,2,3],
-  100: [0],
-}
+const onNumberOfRoomsSelectChange = () => {
+  const capacityOptions = capacitySelect.querySelectorAll('option');
+  const availableCapacityOptions = CapacityOptions[+numberOfRoomsSelect.value];
 
-const onRoomsChange = () => {
-  const possibleCapacities = roomCapacities[+rooms.value];
-
-  capacities.forEach((option) => {
-    option.disabled = true;
+  capacityOptions.forEach((capacityOption) => {
+    capacityOption.disabled = true;
   })
 
-  possibleCapacities.forEach((possibleCapacity) => {
-    capacities.forEach((capacity) => {
-      if (+capacity.value === possibleCapacity) {
-        capacity.disabled = false;
+  availableCapacityOptions.forEach((availableCapacityOption) => {
+    capacityOptions.forEach((capacityOption) => {
+      if (+capacityOption.value === availableCapacityOption) {
+        capacityOption.disabled = false;
       }
     });
   });
 
-  capacity.value = Math.max(...possibleCapacities);
+  capacitySelect.value = Math.max(...availableCapacityOptions);
 }
 
-onTypeChange();
-onRoomsChange();
+const onSuccessPost = () => {
+  showModal('#success', '.success');
+}
 
-type.addEventListener('change', onTypeChange);
-timein.addEventListener('change', onTimeinChange);
-timeout.addEventListener('change', onTimeoutChange);
-rooms.addEventListener('change', onRoomsChange);
+const onFailPost = () => {
+  showModal('#error', '.error');
+}
+
+const onAdFormSubmint = (evt) => {
+  evt.preventDefault();
+
+  postData(
+    POST_URL,
+    onSuccessPost,
+    onFailPost,
+    new FormData(adForm),
+  );
+}
+
+typeSelect.addEventListener('change', onTypeSelectChange);
+timeInSelect.addEventListener('change', onTimeInSelectChange);
+timeOutSelect.addEventListener('change', onTimeOutSelectChange);
+numberOfRoomsSelect.addEventListener('change', onNumberOfRoomsSelectChange);
+adForm.addEventListener('submit', onAdFormSubmint);
+
+
+export {POST_URL};
