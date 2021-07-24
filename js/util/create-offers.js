@@ -1,4 +1,4 @@
-import {getRandomPositiveFloat, getRandomPositiveNumber} from '../util/util.js';
+import {getRandomPositiveFloat, getRandomPositiveNumber} from './util.js';
 
 const TYPES = [
   'palace',

@@ -1,5 +1,5 @@
 import {debounce} from '../util/util.js';
-import {renderPopups} from './render-popups.js';
+import {renderMarkerPopup} from './render-marker-popup.js';
 import {getData} from './api.js';
 import {filterPins} from './filter.js';
 import {showModal} from './show-modal.js';
@@ -91,7 +91,7 @@ const addMarkersOnMap = (offers) => {
 
     marker
       .addTo(map)
-      .bindPopup(renderPopups(offer));
+      .bindPopup(renderMarkerPopup(offer));
 
     return marker;
   };
@@ -141,5 +141,4 @@ const setMap = () => {
 };
 
 setMap();
-
 

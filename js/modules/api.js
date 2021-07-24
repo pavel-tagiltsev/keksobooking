@@ -4,7 +4,7 @@ const getData = (url, onSuccess, onFail) => {
       if (response.ok) {
         return response.json();
       }
-      // onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
+      onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
     }))
     .then(onSuccess)
     .catch(onFail);
