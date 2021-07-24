@@ -1,7 +1,7 @@
 import {debounce} from '../util/util.js';
 import {renderMarkerPopup} from './render-marker-popup.js';
 import {getData} from './api.js';
-import {filterPins} from './filter.js';
+import {filterMarkers} from './filter.js';
 import {showModal} from './show-modal.js';
 
 const STARTING_LATITUDE = 35.68283;
@@ -103,7 +103,7 @@ const addMarkersOnMap = (offers) => {
 };
 
 const onMapFilterChange = (offers) => {
-  const filteredOffers = filterPins(offers);
+  const filteredOffers = filterMarkers(offers);
   map.closePopup();
   removeMarkers();
   addMarkersOnMap(filteredOffers);
