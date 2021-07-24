@@ -1,5 +1,5 @@
 import {postData} from './api.js';
-import {showModal} from './show-modal.js';
+import {showSuccessPostModal, showErrorPostModal} from './modal.js';
 
 const POST_URL = 'https://22.javascript.pages.academy/keksobooking';
 
@@ -61,11 +61,11 @@ const onNumberOfRoomsSelectChange = () => {
 }
 
 const onSuccessPost = () => {
-  showModal('#success', '.success');
+  showSuccessPostModal();
 }
 
 const onFailPost = () => {
-  showModal('#error', '.error');
+  showErrorPostModal();
 }
 
 const onAdFormSubmint = (evt) => {

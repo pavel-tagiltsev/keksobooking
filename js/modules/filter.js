@@ -3,21 +3,21 @@ const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
 
 const mapFilter = document.querySelector('.map__filters');
-const typeFilter = mapFilter.querySelector('#housing-type');
-const priceFilter = mapFilter.querySelector('#housing-price');
-const roomsFilter = mapFilter.querySelector('#housing-rooms');
-const guestsFilter = mapFilter.querySelector('#housing-guests');
-const featursFilter = mapFilter.querySelector('#housing-features');
+const typeSelect = mapFilter.querySelector('#housing-type');
+const priceSelect = mapFilter.querySelector('#housing-price');
+const roomsSelect = mapFilter.querySelector('#housing-rooms');
+const guestsSelect = mapFilter.querySelector('#housing-guests');
+const featursFieldset = mapFilter.querySelector('#housing-features');
 
 const checkType = (offer) => {
-  const chosenTypeOption = typeFilter.value;
+  const chosenTypeOption = typeSelect.value;
   const offerType = offer.offer.type;
 
   return chosenTypeOption === DEFAULT_VALUE || chosenTypeOption === offerType;
 }
 
 const checkPrice = (offer) => {
-  const chosenPriceRangeOption = priceFilter.value;
+  const chosenPriceRangeOption = priceSelect.value;
   const offerPrice = offer.offer.price;
 
   switch (chosenPriceRangeOption) {
@@ -35,21 +35,21 @@ const checkPrice = (offer) => {
 }
 
 const checkRooms = (offer) => {
-  const chosenRoomOption = roomsFilter.value;
+  const chosenRoomOption = roomsSelect.value;
   const availableRoomOptions = offer.offer.rooms;
 
   return chosenRoomOption === DEFAULT_VALUE || +chosenRoomOption === availableRoomOptions;
 }
 
 const checkGuests = (offer) => {
-  const choosenCapacityOption = guestsFilter.value;
+  const choosenCapacityOption = guestsSelect.value;
   const availableCapacityOptions = offer.offer.guests;
 
   return choosenCapacityOption === DEFAULT_VALUE || +choosenCapacityOption === availableCapacityOptions;
 }
 
 const checkFeatures = (offer) => {
-  const chosenFeatures = featursFilter.querySelectorAll('.map__checkbox:checked');
+  const chosenFeatures = featursFieldset.querySelectorAll('.map__checkbox:checked');
   const offerAvailableFeatures = offer.offer.features;
   let total = 0;
 

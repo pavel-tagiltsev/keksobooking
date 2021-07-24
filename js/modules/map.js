@@ -2,7 +2,7 @@ import {debounce} from '../util/util.js';
 import {renderMarkerPopup} from './render-marker-popup.js';
 import {getData} from './api.js';
 import {filterMarkers} from './filter.js';
-import {showModal} from './show-modal.js';
+import {showErrorGetModal} from './modal.js';
 
 const STARTING_LATITUDE = 35.68283;
 const STARTING_LONGITUDE = 139.75945;
@@ -116,7 +116,7 @@ const onSuccessMapLoad = (offers) => {
 }
 
 const onFailMapLoad = () => {
-  showModal('#load-error', '.error');
+  showErrorGetModal();
 }
 
 const onMapLoad = () => {
