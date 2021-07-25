@@ -1,3 +1,8 @@
+import {
+  isEscEvent,
+  isEnterEvent
+} from '../util/util.js';
+
 const MODAL_ZINDEX = '10000';
 const CLASS_HIDDEN = 'hidden';
 
@@ -31,10 +36,6 @@ setUpModal(errorPostModal);
 setUpModal(errorGetModal);
 
 // Logic
-const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
-
-const isEnterEvent = (evt) => evt.key === 'Enter';
-
 const showModal = (modal) => {
 
   const onCloseButtonClick = (evt) => {
@@ -91,4 +92,8 @@ const showErrorGetModal = () => {
   showModal(errorGetModal);
 }
 
-export {showSuccessPostModal, showErrorPostModal, showErrorGetModal};
+export {
+  showSuccessPostModal,
+  showErrorPostModal,
+  showErrorGetModal
+};

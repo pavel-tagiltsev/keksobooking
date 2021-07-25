@@ -1,21 +1,24 @@
-import {postData} from './api.js';
-import {showSuccessPostModal, showErrorPostModal} from './modal.js';
+import {
+  postData
+} from './api.js';
 
-const POST_URL = 'https://22.javascript.pages.academy/keksobooking';
+import {
+  activateForm
+} from '../util/util.js';
 
 const CapacityOptions = {
   1: [1],
-  2: [1,2],
-  3: [1,2,3],
+  2: [1, 2],
+  3: [1, 2, 3],
   100: [0],
-}
+};
 
 const MinPrices = {
   'bungalow': 0,
   'flat': 1000,
   'house': 5000,
   'palace': 10000,
-}
+};
 
 const adForm = document.querySelector('.ad-form');
 const typeSelect = adForm.querySelector('#type');
@@ -24,6 +27,12 @@ const timeInSelect = adForm.querySelector('#timein');
 const timeOutSelect = adForm.querySelector('#timeout');
 const numberOfRoomsSelect = adForm.querySelector('#room_number');
 const capacitySelect = adForm.querySelector('#capacity');
+const resetButton = document.querySelector('.ad-form__reset');
+
+const setAdress = (lat, lng) => {
+  const adress = document.querySelector('#address');
+  adress.value = `${lat.toFixed(5)} : ${lng.toFixed(5)}`;
+};
 
 const onTypeSelectChange = () => {
   const minPrice = MinPrices[typeSelect.value];
@@ -58,32 +67,52 @@ const onNumberOfRoomsSelectChange = () => {
   });
 
   capacitySelect.value = Math.max(...availableCapacityOptions);
-}
+};
 
-const onSuccessPost = () => {
-  showSuccessPostModal();
-}
+const resetAdForm = () => {
+  adForm.reset();
+  onTypeSelectChange();
+  onTimeInSelectChange();
+  onTimeOutSelectChange();
+  onNumberOfRoomsSelectChange();
+};
 
-const onFailPost = () => {
-  showErrorPostModal();
-}
+const onAdFormSubmint = (PostUrl, onSuccess, onFail) => {
+  return (evt) => {
+    evt.preventDefault();
 
-const onAdFormSubmint = (evt) => {
-  evt.preventDefault();
+    postData(
+      PostUrl,
+      onSuccess,
+      onFail,
+      new FormData(adForm),
+    );
+  };
+};
 
-  postData(
-    POST_URL,
-    onSuccessPost,
-    onFailPost,
-    new FormData(adForm),
-  );
-}
+const activateAdForm = ({
+  PostSettings: {
+    postUrl,
+    onSuccess,
+    onFail,
+  },
+  onReset: {
+    callback,
+  },
+}) => {
+  activateForm(adForm);
 
-typeSelect.addEventListener('change', onTypeSelectChange);
-timeInSelect.addEventListener('change', onTimeInSelectChange);
-timeOutSelect.addEventListener('change', onTimeOutSelectChange);
-numberOfRoomsSelect.addEventListener('change', onNumberOfRoomsSelectChange);
-adForm.addEventListener('submit', onAdFormSubmint);
+  typeSelect.addEventListener('change', onTypeSelectChange);
+  timeInSelect.addEventListener('change', onTimeInSelectChange);
+  timeOutSelect.addEventListener('change', onTimeOutSelectChange);
+  numberOfRoomsSelect.addEventListener('change', onNumberOfRoomsSelectChange);
 
+  adForm.addEventListener('submit', onAdFormSubmint(postUrl, onSuccess, onFail));
+  resetButton.addEventListener('click', callback());
+};
 
-export {POST_URL};
+export {
+  setAdress,
+  activateAdForm,
+  resetAdForm
+};

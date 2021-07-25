@@ -1,6 +1,21 @@
+import {
+  debounce
+} from '../util/util.js';
+
+import {
+  removeMarkers,
+  renderMarkers,
+  closeOpenedPopup
+} from '../modules/map.js';
+
+import {
+  activateForm
+} from '../util/util.js';
+
 const DEFAULT_VALUE = 'any';
 const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
+const RERENDER_DELAY = 500;
 
 const mapFilter = document.querySelector('.map__filters');
 const typeSelect = mapFilter.querySelector('#housing-type');
@@ -74,4 +89,25 @@ const filterMarkers = (offers) => {
   return filteredOffers;
 }
 
-export {filterMarkers};
+const onMapFilterChange = (loadedOffers) => {
+  return debounce(() => {
+    const filteredOffers = filterMarkers(loadedOffers);
+    closeOpenedPopup();
+    removeMarkers();
+    renderMarkers(filteredOffers);
+  }, RERENDER_DELAY);
+};
+
+const activateMapFilter = (loadedOffers) => {
+  activateForm(mapFilter);
+  mapFilter.addEventListener('change', onMapFilterChange(loadedOffers));
+}
+
+const resetMapFilter = () => {
+  mapFilter.reset();
+}
+
+export {
+  activateMapFilter,
+  resetMapFilter
+};

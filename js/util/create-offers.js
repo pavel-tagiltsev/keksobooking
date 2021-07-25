@@ -1,5 +1,3 @@
-import {getRandomPositiveFloat, getRandomPositiveNumber} from './util.js';
-
 const TYPES = [
   'palace',
   'flat',
@@ -50,6 +48,22 @@ const MIN_GUESTS = 0;
 const MAX_GUESTS = 2;
 
 const NUMBER_OF_OFFERS = 8;
+
+const getRandomPositiveFloat = (min, max, rounding = 0) => {
+  const lower = Math.min(Math.abs(min), Math.abs(max));
+  const upper = Math.max(Math.abs(min), Math.abs(max));
+
+  const result = Math.random() * (upper - lower) + lower;
+  return result.toFixed(rounding);
+};
+
+function getRandomPositiveNumber (min, max) {
+  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
+  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
+
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+}
 
 const getRundomLocation = () => {
   const numbersAfterPoint = 5;

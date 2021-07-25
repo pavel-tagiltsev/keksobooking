@@ -1,8 +1,5 @@
-import {debounce} from '../util/util.js';
 import {renderMarkerPopup} from './render-marker-popup.js';
-import {getData} from './api.js';
-import {filterMarkers} from './filter.js';
-import {showErrorGetModal} from './modal.js';
+import {setAdress} from './form.js';
 
 const STARTING_LATITUDE = 35.68283;
 const STARTING_LONGITUDE = 139.75945;
@@ -11,45 +8,21 @@ const MAIN_MARKER_WIDTH = 52;
 const MAIN_MARKER_HEIGHT = 52;
 const MARKER_WIDTH = 40;
 const MARKER_HEIGHT = 40;
-const GET_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 
 const map = L.map('map-canvas');
-const layer = L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-);
-const markers = [];
+const renderedMarkers = [];
 
-const mapFilter = document.querySelector('.map__filters');
-const adForm = document.querySelector('.ad-form');
-
-const setAdress = (lat, lng) => {
-  const adress = document.querySelector('#address');
-  adress.value = `${lat.toFixed(5)} : ${lng.toFixed(5)}`;
-}
-
-setAdress(STARTING_LATITUDE, STARTING_LONGITUDE);
+const closeOpenedPopup = () => {
+  map.closePopup();
+};
 
 const removeMarkers = () => {
-  markers.forEach((marker) => {
+  renderedMarkers.forEach((marker) => {
     marker.remove();
-  })
-}
-
-const getFormActive = (form) => {
-  const classes = form.classList;
-  const lastFormClass = classes[classes.length - 1];
-  classes.remove(lastFormClass);
-
-  Array.from(form.children).forEach((fieldset) => {
-    fieldset.disabled = false;
   });
-}
+};
 
-const setMainMarkerOnMap = () => {
+const getMainMarker = () => {
   const mainMarkerIcon = L.icon({
     iconUrl: '../img/main-marker.svg',
     iconSize: [MAIN_MARKER_WIDTH, MAIN_MARKER_HEIGHT],
@@ -68,13 +41,25 @@ const setMainMarkerOnMap = () => {
     const lat = evt.target.getLatLng().lat;
     const lng = evt.target.getLatLng().lng;
     setAdress(lat, lng);
-  }
+  };
 
   mainMarker.on('move', onMianMarkerMove);
-  mainMarker.addTo(map);
-}
 
-const addMarkersOnMap = (offers) => {
+  return mainMarker;
+};
+
+const mainMarker = getMainMarker();
+
+const renderMainMarker = () => {
+  mainMarker.setLatLng({
+    lat: STARTING_LATITUDE,
+    lng: STARTING_LONGITUDE,
+  });
+
+  mainMarker.addTo(map);
+};
+
+const renderMarkers = (offers) => {
   const createMarker = (offer) => {
     const markerIcon = L.icon({
       iconUrl: '../img/marker.svg',
@@ -98,47 +83,37 @@ const addMarkersOnMap = (offers) => {
 
   offers.forEach((offer) => {
     const marker = createMarker(offer);
-    markers.push(marker);
+    renderedMarkers.push(marker);
   });
 };
 
-const onMapFilterChange = (offers) => {
-  const filteredOffers = filterMarkers(offers);
-  map.closePopup();
-  removeMarkers();
-  addMarkersOnMap(filteredOffers);
-}
-
-const onSuccessMapLoad = (offers) => {
-  addMarkersOnMap(offers);
-  getFormActive(mapFilter);
-  mapFilter.addEventListener('change', debounce(() => onMapFilterChange(offers), 500));
-}
-
-const onFailMapLoad = () => {
-  showErrorGetModal();
-}
-
-const onMapLoad = () => {
-  getFormActive(adForm);
-  setMainMarkerOnMap();
-  getData(
-    GET_URL,
-    onSuccessMapLoad,
-    onFailMapLoad,
-  );
-}
-
-const setMap = () => {
-  map
-    .on('load', onMapLoad)
-    .setView({
-      lat: STARTING_LATITUDE,
-      lng: STARTING_LONGITUDE,
-    }, STARTING_ZOOM);
-
-  layer.addTo(map);
+const setMapDefault = () => {
+  map.setView({
+    lat: STARTING_LATITUDE,
+    lng: STARTING_LONGITUDE,
+  }, STARTING_ZOOM);
 };
 
-setMap();
+
+const setMap = (onMapLoad) => {
+  map.on('load', onMapLoad);
+  setMapDefault();
+
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+  ).addTo(map);
+};
+
+export {
+  setMap,
+  STARTING_LATITUDE,
+  STARTING_LONGITUDE,
+  removeMarkers,
+  renderMarkers,
+  renderMainMarker,
+  setMapDefault,
+  closeOpenedPopup
+};
 
