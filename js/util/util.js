@@ -16,8 +16,12 @@ const activateForm = (form) => {
   });
 };
 
+const isArrEmpty = (arr) => {
+  return (arr.length === 0) ? true : false;
+}
+
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const isEnterEvent = (evt) => evt.key === 'Enter';
 
-export {debounce, isEscEvent, isEnterEvent, activateForm};
+export {debounce, isEscEvent, isEnterEvent, activateForm, isArrEmpty};

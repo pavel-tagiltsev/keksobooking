@@ -1,4 +1,4 @@
-import {renderMarkerPopup} from './render-marker-popup.js';
+import {renderMarkerPopup} from './popup.js';
 import {setAdress} from './form.js';
 
 const STARTING_LATITUDE = 35.68283;
@@ -8,6 +8,7 @@ const MAIN_MARKER_WIDTH = 52;
 const MAIN_MARKER_HEIGHT = 52;
 const MARKER_WIDTH = 40;
 const MARKER_HEIGHT = 40;
+const GALLERY = '.popup__photos';
 
 const map = L.map('map-canvas');
 const renderedMarkers = [];
@@ -77,6 +78,16 @@ const renderMarkers = (offers) => {
     marker
       .addTo(map)
       .bindPopup(renderMarkerPopup(offer));
+
+    marker.on('popupopen', () => {
+      baguetteBox.run(GALLERY, {
+        noScrollbars: true,
+      });
+    });
+
+    marker.on('popupclose', () => {
+      baguetteBox.destroy();
+    });
 
     return marker;
   };

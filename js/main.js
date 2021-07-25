@@ -60,18 +60,10 @@ const onSuccessPost = () => {
   setDefault();
 };
 
-const onFailPost = () => {
-  showErrorPostModal();
-};
-
 const onSuccessMapLoad = (response) => {
   loadedOffers = response.slice(MIN_NUMBER_OFFERS, MAX_NUMBER_OFFERS);
   activateMapFilter(loadedOffers);
   renderMarkers(loadedOffers);
-}
-
-const onFailMapLoad = () => {
-  showErrorGetModal();
 }
 
 const onMapLoad = () => {
@@ -79,7 +71,7 @@ const onMapLoad = () => {
     PostSettings: {
       postUrl: POST_URL,
       onSuccess: onSuccessPost,
-      onFail: onFailPost,
+      onFail: showErrorPostModal,
     },
     onReset: {
       callback: onResetButtonClick,
@@ -90,7 +82,7 @@ const onMapLoad = () => {
   getData(
     GET_URL,
     onSuccessMapLoad,
-    onFailMapLoad,
+    showErrorGetModal,
   );
 }
 

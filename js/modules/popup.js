@@ -1,3 +1,7 @@
+import {
+  isArrEmpty
+} from '../util/util.js';
+
 const getTranslatedType = (type) => {
   const types = {
     bungalow: 'Бунгало',
@@ -28,32 +32,45 @@ const getRightNameOfGuests = (number) => {
   return (lastNumber === 1) ? `${number} гостя` : `${number} гостей`;
 }
 
-const isArrEmpty = (arr) => {
-  return (arr.length === 0) ? true : false;
-}
-
-const changeUrl = (element, url) => {
-  element.src = url;
-}
-
-const changeClassName = (element, feature) => {
-  element.className = `popup__feature popup__feature--${feature}`;
-}
-
-const renderElementsToList = (parentElement, callback, arr) => {
+const renderPhotots = (parentElement, arr) => {
   if (isArrEmpty(arr)) {
     parentElement.remove();
   }
 
-  const childElement = parentElement.firstElementChild;
+  const linkElement = parentElement.querySelector('a');
+  const imgElement = parentElement.querySelector('img');
   const fragment = document.createDocumentFragment();
 
   parentElement.innerHTML = '';
 
-  arr.forEach((item) => {
-    const cloneChildElement = childElement.cloneNode(true);
-    callback(cloneChildElement, item);
-    fragment.appendChild(cloneChildElement);
+  arr.forEach((url) => {
+    const link = linkElement.cloneNode();
+    const img = imgElement.cloneNode();
+
+    link.href = url;
+    img.src = url;
+
+    link.appendChild(img);
+    fragment.appendChild(link);
+  });
+
+  parentElement.appendChild(fragment);
+}
+
+const renderFeatures= (parentElement, arr) => {
+  if (isArrEmpty(arr)) {
+    parentElement.remove();
+  }
+
+  const featureElement = parentElement.querySelector('.popup__feature');
+  const fragment = document.createDocumentFragment();
+
+  parentElement.innerHTML = '';
+
+  arr.forEach((feature) => {
+    const featureItem = featureElement.cloneNode(true);
+    featureItem.className = `popup__feature popup__feature--${feature}`;
+    fragment.appendChild(featureItem);
   });
 
   parentElement.appendChild(fragment);
@@ -81,11 +98,12 @@ const renderMarkerPopup = ({author, offer}) => {
   type.textContent = getTranslatedType(offer.type);
   capacity.textContent = `${getRightNameOfRooms(offer.rooms)} для ${getRightNameOfGuests(offer.guests)}`;
   time.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  renderElementsToList(featureList, changeClassName, offer.features);
+  renderFeatures(featureList, offer.features);
   description.textContent = offer.description;
-  renderElementsToList(photoList, changeUrl, offer.photos);
+  renderPhotots(photoList, offer.photos);
 
   return popup;
 }
+
 
 export {renderMarkerPopup};
