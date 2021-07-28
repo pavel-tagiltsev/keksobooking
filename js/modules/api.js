@@ -1,11 +1,11 @@
 const getData = (url, onSuccess, onFail) => {
   fetch(url)
-    .then((response => {
+    .then((response) => {
       if (response.ok) {
         return response.json();
       }
       onFail(`Не удалось загрузить данные об объектах: ${response.text}`);
-    }))
+    })
     .then(onSuccess)
     .catch(onFail);
 };

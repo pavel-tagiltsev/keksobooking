@@ -3,7 +3,7 @@ import {setAdress} from './form.js';
 
 const STARTING_LATITUDE = 35.68283;
 const STARTING_LONGITUDE = 139.75945;
-const STARTING_ZOOM = 9;
+const STARTING_ZOOM = 13;
 const MAIN_MARKER_WIDTH = 52;
 const MAIN_MARKER_HEIGHT = 52;
 const MARKER_WIDTH = 40;
@@ -36,6 +36,7 @@ const getMainMarker = () => {
   }, {
     icon: mainMarkerIcon,
     draggable: true,
+    zIndexOffset: 1000,
   });
 
   const onMianMarkerMove = (evt) => {

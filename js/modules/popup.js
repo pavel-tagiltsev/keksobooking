@@ -1,17 +1,7 @@
 import {
-  isArrEmpty
+  isArrEmpty,
+  getTranslatedType
 } from '../util/util.js';
-
-const getTranslatedType = (type) => {
-  const types = {
-    bungalow: 'Бунгало',
-    flat: 'Квартрира',
-    house: 'Дом',
-    palace: 'Дворец',
-  }
-
-  return types[type];
-};
 
 const getRightNameOfRooms = (number) => {
   const lastNumber = +number.toString().slice(-1);

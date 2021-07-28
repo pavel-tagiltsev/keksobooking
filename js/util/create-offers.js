@@ -105,13 +105,17 @@ const createOffer = function(index) {
       checkin: getRandomArrayElement(CHECKIN_SLOTS),
       checkout: getRandomArrayElement(CHECKOUT_SLOTS),
       features: getArrayRandomLength(FEATURES),
-      description: 'Описание',
+      description: 'Описание предложения',
       photos: getArrayRandomLength(PHOTOS),
       location: rundomLocation,
+    },
+    location: {
+      lat: rundomLocation.x,
+      lng: rundomLocation.y,
     },
   };
 }
 
-const createOffers = () => new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
+const createOffers = () => new Array(NUMBER_OF_OFFERS).fill(null).map((index) => createOffer(index));
 
 export {createOffers};

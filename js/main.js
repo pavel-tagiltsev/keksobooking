@@ -30,6 +30,10 @@ import {
   showErrorPostModal
 } from './modules/modal.js';
 
+import {
+  createOffers
+} from './util/create-offers.js'
+
 const GET_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 const POST_URL = 'https://22.javascript.pages.academy/keksobooking';
 const MIN_NUMBER_OFFERS = 0;
@@ -79,11 +83,24 @@ const onMapLoad = () => {
   });
   renderMainMarker();
   setAdress(STARTING_LATITUDE, STARTING_LONGITUDE);
-  getData(
-    GET_URL,
-    onSuccessMapLoad,
-    showErrorGetModal,
-  );
+  /*  Для активации загрузки данных с сервера необходимо
+  закоментировать блок temporary и разблокировать блок loading.
+  Возможны ошибки из-за отсутствия данных
+  или изменившегося формата данных.*/
+
+  /* Блок temporary. Данные для корректной работы демонстрации. */
+  const temporaryData = createOffers();
+  onSuccessMapLoad(temporaryData);
+
+  /* Блок loading. Из-за отсутствия доступа к серверным данным,
+    отключаю загрузку для корректной работы демонстрации.
+
+    getData(
+      GET_URL,
+      onSuccessMapLoad,
+      showErrorGetModal,
+    );
+  */
 }
 
 setMap(onMapLoad);

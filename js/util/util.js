@@ -20,8 +20,19 @@ const isArrEmpty = (arr) => {
   return (arr.length === 0) ? true : false;
 }
 
+const getTranslatedType = (type) => {
+  const types = {
+    bungalow: 'Бунгало',
+    flat: 'Квартрира',
+    house: 'Дом',
+    palace: 'Дворец',
+  }
+
+  return types[type];
+};
+
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const isEnterEvent = (evt) => evt.key === 'Enter';
 
-export {debounce, isEscEvent, isEnterEvent, activateForm, isArrEmpty};
+export {debounce, isEscEvent, isEnterEvent, activateForm, isArrEmpty, getTranslatedType};
