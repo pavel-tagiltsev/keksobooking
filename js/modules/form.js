@@ -92,6 +92,22 @@ const onTypeSelectChange = () => {
 
   price.placeholder = setTextHint(minPrice);
   price.min = minPrice;
+
+  const rangeUnderflow = price.validity.rangeUnderflow;
+  const rangeOverflow = price.validity.rangeOverflow;
+
+  if (rangeUnderflow) {
+    price.setCustomValidity(' ');
+    showError(price, `Минимальная цена ${price.min}.`);
+    price.reportValidity();
+  } else if (rangeOverflow) {
+    price.setCustomValidity(' ');
+    showError(price, `Максимальная цена ${price.max}`);
+    price.reportValidity();
+  } else {
+    price.setCustomValidity('');
+    showError(price, '');
+  }
 };
 
 const onPriceInput = () => {

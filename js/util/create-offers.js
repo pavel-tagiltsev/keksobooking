@@ -27,9 +27,9 @@ const FEATURES = [
 ];
 
 const PHOTOS = [
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
-  'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
+  'img/apartaments/duonguyen.jpg',
+  'img/apartaments/brandon-hoogenboom.jpg',
+  'img/apartaments/claire-rendall.jpg',
 ];
 
 const MIN_X = 35.65000;
@@ -116,6 +116,6 @@ const createOffer = function(index) {
   };
 }
 
-const createOffers = () => new Array(NUMBER_OF_OFFERS).fill(null).map((index) => createOffer(index));
+const createOffers = () => new Array(NUMBER_OF_OFFERS).fill(null).map((item, index) => createOffer(index));
 
 export {createOffers};
