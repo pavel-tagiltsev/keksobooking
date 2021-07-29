@@ -97,7 +97,7 @@ const createOffer = function(index) {
     },
     offer: {
       title: 'Загаловок',
-      address: `${rundomLocation.x}, ${rundomLocation.y}`,
+      address: `${rundomLocation.x} : ${rundomLocation.y}`,
       price: getRandomPositiveNumber(MIN_PRICE, MAX_PRICE),
       type: getRandomArrayElement(TYPES),
       rooms: getRandomPositiveNumber(MIN_ROOMS, MAX_ROOMS),
