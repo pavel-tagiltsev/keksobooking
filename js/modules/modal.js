@@ -36,6 +36,23 @@ setUpModal(errorPostModal);
 setUpModal(errorGetModal);
 
 // Logic
+const calcScroll = () => {
+  const div = document.createElement('div');
+
+  div.style.width = '50px';
+  div.style.height = '50px';
+  div.style.overflowY = 'scroll';
+  div.style.visibility = 'hidden';
+
+  document.body.appendChild(div);
+  const scrollWidth = div.offsetWidth - div.clientWidth;
+  div.remove();
+
+  return scrollWidth;
+}
+
+const scrollWidth = calcScroll();
+
 const showModal = (modal) => {
 
   const onCloseButtonClick = (evt) => {
@@ -62,6 +79,7 @@ const showModal = (modal) => {
 
     modal.classList.add(CLASS_HIDDEN);
     document.body.style.overflow = '';
+    document.documentElement.style.paddingRight = '';
     window.removeEventListener('keydown', onWindowKeydown);
     modal.removeEventListener('click', onModalClick);
   }
@@ -73,6 +91,7 @@ const showModal = (modal) => {
 
     modal.classList.remove(CLASS_HIDDEN);
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.paddingRight = `${scrollWidth}px`;
     window.addEventListener('keydown', onWindowKeydown);
     modal.addEventListener('click', onModalClick);
   }
