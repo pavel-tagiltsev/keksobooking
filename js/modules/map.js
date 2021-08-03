@@ -81,9 +81,7 @@ const renderMarkers = (offers) => {
       .bindPopup(renderMarkerPopup(offer));
 
     marker.on('popupopen', () => {
-      baguetteBox.run(GALLERY, {
-        noScrollbars: true,
-      });
+      baguetteBox.run(GALLERY);
     });
 
     marker.on('popupclose', () => {
