@@ -72,7 +72,7 @@
     <!-- Форма объявления -->
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
-      <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" action="https://22.javascript.pages.academy/keksobooking" autocomplete="off">
+      <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" action="https://22.javascript.pages.academy/keksobooking" autocomplete="off" novalidate>
         <fieldset class="ad-form-header" disabled>
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -105,7 +105,7 @@
         </fieldset>
         <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="мин. 1000" min="1000" max="1000000" required>
+          <input id="price" name="price" type="number" placeholder="мин. 1000" min="1000" max="100000" required>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time" disabled>
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>

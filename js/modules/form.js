@@ -6,6 +6,9 @@ import {
   activateForm
 } from '../util/util.js';
 
+const MIN_TITLE_LENGTH = 30;
+const MAX_TITLE_LENGTH = 100;
+
 const CapacityOptions = {
   1: [1],
   2: [1, 2],
@@ -30,6 +33,13 @@ const numberOfRoomsSelect = adForm.querySelector('#room_number');
 const capacitySelect = adForm.querySelector('#capacity');
 const resetButton = document.querySelector('.ad-form__reset');
 const adFormButton = adForm.querySelector('.ad-form__submit');
+
+const getRightSymbol = (number) => {
+  const lastNumber = +number.toString().slice(-1);
+  const lastTwoNumbers = +number.toString().slice(-2);
+
+  return (lastNumber === 1 && lastTwoNumbers !== 11) ? `${number} символа` : `${number} символов`;
+}
 
 const addMessage = (input, message) => {
   const span = document.createElement('span');
@@ -60,25 +70,29 @@ const showError = (input, message) => {
 
 const onTitleInputInput = () => {
   const length = titleInput.value.length;
-  const tooShort = titleInput.validity.tooShort;
-  const tooLong = titleInput.validity.tooLong;
-  const valueMissing = titleInput.validity.valueMissing;
+  const tooShort = length < MIN_TITLE_LENGTH;
+  const tooLong = length > MAX_TITLE_LENGTH;
+  const valueMissing = length === 0;
 
   if (valueMissing){
-    titleInput.setCustomValidity(' ');
     showError(titleInput, 'Это обязательное поле.');
-  } else if (tooShort) {
-    titleInput.setCustomValidity(' ');
-    showError(titleInput, `Минимальная длина - 30 симв. Не хватает ${30 - length} симв.`);
-  } else if (tooLong) {
-    titleInput.setCustomValidity(' ');
-    showError(titleInput, `Максимальная длина 60 симв. Необходимо удалить ${100 - length} симв.`);
-  } else {
-    showError(titleInput, '');
-    titleInput.setCustomValidity('');
+    return true;
   }
 
-  titleInput.reportValidity();
+  if (tooShort) {
+    showError(titleInput, `Минимальная длина - ${getRightSymbol(MIN_TITLE_LENGTH)}.
+    Не хватает ${getRightSymbol(MIN_TITLE_LENGTH - length)}.`);
+    return true;
+  }
+
+  if (tooLong) {
+    showError(titleInput, `Максимальная длина - ${getRightSymbol(MAX_TITLE_LENGTH)}.
+    Необходимо удалить ${getRightSymbol(length - MAX_TITLE_LENGTH)}`);
+    return true;
+  }
+
+  showError(titleInput, '');
+  return false;
 };
 
 const setAdress = (lat, lng) => {
@@ -93,43 +107,45 @@ const onTypeSelectChange = () => {
   price.placeholder = setTextHint(minPrice);
   price.min = minPrice;
 
-  const rangeUnderflow = price.validity.rangeUnderflow;
-  const rangeOverflow = price.validity.rangeOverflow;
+  const valueMissing = price.value === '';
+  const rangeUnderflow = +price.value < price.min;
+  const rangeOverflow = +price.value > price.max;
 
-  if (rangeUnderflow) {
-    price.setCustomValidity(' ');
+  if (rangeUnderflow && !valueMissing) {
     showError(price, `Минимальная цена ${price.min}.`);
-    price.reportValidity();
-  } else if (rangeOverflow) {
-    price.setCustomValidity(' ');
-    showError(price, `Максимальная цена ${price.max}`);
-    price.reportValidity();
-  } else {
-    price.setCustomValidity('');
-    showError(price, '');
+    return;
   }
+
+  if (rangeOverflow && !valueMissing) {
+    showError(price, `Максимальная цена ${price.max}`);
+    return;
+  }
+
+  showError(price, '');
 };
 
 const onPriceInput = () => {
-  const valueMissing = price.validity.valueMissing;
-  const rangeUnderflow = price.validity.rangeUnderflow;
-  const rangeOverflow = price.validity.rangeOverflow;
+  const valueMissing = price.value === '';
+  const rangeUnderflow = +price.value < price.min;
+  const rangeOverflow = +price.value > price.max;
 
   if (valueMissing){
-    price.setCustomValidity(' ');
     showError(price, 'Это обязательное поле.');
-  } else if (rangeUnderflow) {
-    price.setCustomValidity(' ');
-    showError(price, `Минимальная цена ${price.min}.`);
-  } else if (rangeOverflow) {
-    price.setCustomValidity(' ');
-    showError(price, `Максимальная цена ${price.max}`);
-  } else {
-    price.setCustomValidity('');
-    showError(price, '');
+    return true;
   }
 
-  price.reportValidity();
+  if (rangeUnderflow) {
+    showError(price, `Минимальная цена ${price.min}.`);
+    return true;
+  }
+
+  if (rangeOverflow) {
+    showError(price, `Максимальная цена ${price.max}`);
+    return true;
+  }
+
+  showError(price, '');
+  return false;
 }
 
 const onTimeInSelectChange = () => {
@@ -159,7 +175,18 @@ const onNumberOfRoomsSelectChange = () => {
   capacitySelect.value = Math.max(...availableCapacityOptions);
 };
 
-const onAdFormButtonClick = () => {
+const isInvalid = (validity) => {
+  return validity;
+}
+
+const onAdFormButtonClick = (evt) => {
+  const titleInputValidity = onTitleInputInput();
+  const priceInputValidity = onPriceInput();
+
+  if ( isInvalid(titleInputValidity) || isInvalid(priceInputValidity)) {
+    evt.preventDefault();
+  }
+
   onTitleInputInput();
   onPriceInput();
 }
