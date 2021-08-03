@@ -18,8 +18,9 @@ const getRightNameOfRooms = (number) => {
 
 const getRightNameOfGuests = (number) => {
   const lastNumber = +number.toString().slice(-1);
+  const lastTwoNumbers = +number.toString().slice(-2);
 
-  return (lastNumber === 1) ? `${number} гостя` : `${number} гостей`;
+  return (lastNumber === 1 && lastTwoNumbers !== 11) ? `${number} гостя` : `${number} гостей`;
 }
 
 const renderPhotots = (parentElement, arr) => {
