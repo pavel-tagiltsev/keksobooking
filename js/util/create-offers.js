@@ -1,3 +1,15 @@
+const TITLES = [
+  'Квартира студия в престижном районе',
+  'Тихая квартирка недалеко от метро',
+  'Императорский дворец в центре Токио',
+  'Небольшая бюджетная комната для студентов',
+  'Уютное гнездышко для молодоженов',
+  'Стандартная квартира в центре',
+  'Милое гнездышко для фанатов Анимэ',
+  'Хостел «Для друзей»',
+  'Загородный дом для спокойного отдыха',
+];
+
 const TYPES = [
   'palace',
   'flat',
@@ -25,6 +37,17 @@ const FEATURES = [
   'elevator',
   'conditioner',
 ];
+
+const DESCRIPTIONS = [
+  'Комната в трёхкомнатной квартире, подойдёт молодым путешественникам.',
+  'У нас тут все ништяк. Ларек за углом. Шава 24 часа. Приезжайте! Интернетов нет!',
+  'Хейтеров просьба не беспокоить.',
+  'Великолепная лавочка прямо в центре парка. Подходит для всех кто любит спать на свежем воздухе.',
+  'Замечательный дворец в старинном центре города. Только для тех кто может себе позволить дворец. Лакеев и прочих жокеев просим не беспокоить.',
+  'Маленькая чистая квратира на краю парка. Без интернета, регистрации и СМС.',
+  'Квартира на первом этаже. Соседи тихие. Для всех, кто терпеть не может шума и суеты.',
+  'Великолепная квартира-студия в центре Токио. Подходит как туристам, там и бизнесменам. Квартира полностью укомплектована и имеет свежий ремонт.',
+]
 
 const PHOTOS = [
   'img/apartaments/duonguyen.jpg',
@@ -65,6 +88,12 @@ function getRandomPositiveNumber (min, max) {
   return Math.floor(result);
 }
 
+const roundNumber = (number) => {
+  const remains = number % 1000;
+
+  return number - remains;
+}
+
 const getRundomLocation = () => {
   const numbersAfterPoint = 5;
   const randomX = getRandomPositiveFloat(MIN_X, MAX_X, numbersAfterPoint);
@@ -96,16 +125,16 @@ const createOffer = function(index) {
       avatar: `img/avatars/user${addZeroToNumbersLessThanTen(index + 1)}.png`,
     },
     offer: {
-      title: 'Загаловок',
+      title: getRandomArrayElement(TITLES),
       address: `${rundomLocation.x} : ${rundomLocation.y}`,
-      price: getRandomPositiveNumber(MIN_PRICE, MAX_PRICE),
+      price: roundNumber(getRandomPositiveNumber(MIN_PRICE, MAX_PRICE)),
       type: getRandomArrayElement(TYPES),
       rooms: getRandomPositiveNumber(MIN_ROOMS, MAX_ROOMS),
       guests: getRandomPositiveNumber(MIN_GUESTS, MAX_GUESTS),
       checkin: getRandomArrayElement(CHECKIN_SLOTS),
       checkout: getRandomArrayElement(CHECKOUT_SLOTS),
       features: getArrayRandomLength(FEATURES),
-      description: 'Описание предложения',
+      description: getRandomArrayElement(DESCRIPTIONS),
       photos: getArrayRandomLength(PHOTOS),
       location: rundomLocation,
     },
