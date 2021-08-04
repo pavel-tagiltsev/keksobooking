@@ -3,6 +3,8 @@ import {
   resetMapFilter
 } from './modules/filter.js';
 
+import './modules/gallery.js';
+
 import {
   getData
 } from './modules/api.js';
