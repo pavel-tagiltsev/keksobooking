@@ -4,6 +4,8 @@ import {
 } from './modules/filter.js';
 
 import './modules/gallery.js';
+import './modules/avatar.js';
+import './modules/photos.js';
 
 import {
   getData
