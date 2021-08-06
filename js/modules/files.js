@@ -54,31 +54,31 @@ const showPerviews = (files) => {
   });
 };
 
-const showError = (text) => {
-  alert(text);
-  fileChooser.value = '';
-};
+const onFileChooserChange = (parentElement, showError) => {
+  return (evt) => {
+    const files = fileChooser.files;
+    const tooManyFiles = isAllowedAmountOfFiles(files);
+    const restrictedTypes =  isAllowedFileTypes(files);
 
-const onFileChooserChange = (evt) => {
-  const files = fileChooser.files;
-  const tooManyFiles = isAllowedAmountOfFiles(files);
-  const restrictedTypes =  isAllowedFileTypes(files);
+    deletePerviews();
 
-  deletePerviews();
+    if (tooManyFiles) {
+      showError(parentElement, `Максимальное количество ${ALLOWED_AMOUNT_OF_FILES} шт.`);
+      fileChooser.value = '';
+      evt.preventDefault();
+      return;
+    }
 
-  if (tooManyFiles) {
-    showError('You are only allowed to upload a maximum of 10 files');
-    evt.preventDefault();
-    return;
-  }
+    if (restrictedTypes) {
+      showError(parentElement, 'Разрешенные форматы - jpeg и png.');
+      fileChooser.value = '';
+      evt.preventDefault();
+      return;
+    }
 
-  if (restrictedTypes) {
-    showError('You are only allowed to upload jepg and png types');
-    evt.preventDefault();
-    return;
-  }
-
-  showPerviews(files);
+    showError(parentElement, '');
+    showPerviews(files);
+  };
 }
 
-fileChooser.addEventListener('change', onFileChooserChange);
+export {onFileChooserChange, deletePerviews};

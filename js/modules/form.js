@@ -6,6 +6,15 @@ import {
   activateForm
 } from '../util/util.js';
 
+import {
+  onFileChooserChange,
+  deletePerviews
+} from './files.js';
+
+import {
+  deleteAvatarPerview
+} from './avatar.js';
+
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 
@@ -31,7 +40,9 @@ const timeInSelect = adForm.querySelector('#timein');
 const timeOutSelect = adForm.querySelector('#timeout');
 const numberOfRoomsSelect = adForm.querySelector('#room_number');
 const capacitySelect = adForm.querySelector('#capacity');
-const resetButton = document.querySelector('.ad-form__reset');
+const photoContainer = adForm.querySelector('.ad-form__photo-container');
+const fileChooser = adForm.querySelector('.ad-form__upload input[type=file]');
+const resetButton = adForm.querySelector('.ad-form__reset');
 const adFormButton = adForm.querySelector('.ad-form__submit');
 
 const getRightSymbol = (number) => {
@@ -197,6 +208,11 @@ const resetAdForm = () => {
   onTimeInSelectChange();
   onTimeOutSelectChange();
   onNumberOfRoomsSelectChange();
+  deleteAvatarPerview();
+  deletePerviews();
+
+  showError(titleInput, '');
+  showError(photoContainer, '');
 };
 
 const onAdFormSubmint = (PostUrl, onSuccess, onFail) => {
@@ -230,6 +246,7 @@ const activateAdForm = ({
   timeInSelect.addEventListener('change', onTimeInSelectChange);
   timeOutSelect.addEventListener('change', onTimeOutSelectChange);
   numberOfRoomsSelect.addEventListener('change', onNumberOfRoomsSelectChange);
+  fileChooser.addEventListener('change', onFileChooserChange(photoContainer, showError));
   adFormButton.addEventListener('click', onAdFormButtonClick)
 
   adForm.addEventListener('submit', onAdFormSubmint(postUrl, onSuccess, onFail));

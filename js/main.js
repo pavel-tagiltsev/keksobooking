@@ -5,7 +5,7 @@ import {
 
 import './modules/gallery.js';
 import './modules/avatar.js';
-import './modules/photos.js';
+import './modules/files.js';
 
 import {
   getData
