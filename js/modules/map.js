@@ -4,12 +4,20 @@ import {setAdress} from './form.js';
 const STARTING_LATITUDE = 35.68283;
 const STARTING_LONGITUDE = 139.75945;
 const STARTING_ZOOM = 13;
+
+const MAP = 'map-canvas';
+const LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+const MAIN_MARKER_ICON = '../img/main-marker.svg';
 const MAIN_MARKER_WIDTH = 52;
 const MAIN_MARKER_HEIGHT = 52;
+
+const MARKER_ICON = '../img/marker.svg';
 const MARKER_WIDTH = 40;
 const MARKER_HEIGHT = 40;
 
-const map = L.map('map-canvas');
+const map = L.map(MAP);
 const renderedMarkers = [];
 
 const closeOpenedPopup = () => {
@@ -24,7 +32,7 @@ const removeMarkers = () => {
 
 const getMainMarker = () => {
   const mainMarkerIcon = L.icon({
-    iconUrl: '../img/main-marker.svg',
+    iconUrl: MAIN_MARKER_ICON,
     iconSize: [MAIN_MARKER_WIDTH, MAIN_MARKER_HEIGHT],
     iconAnchor: [MAIN_MARKER_WIDTH / 2, MAIN_MARKER_HEIGHT],
   });
@@ -63,7 +71,7 @@ const renderMainMarker = () => {
 const renderMarkers = (offers) => {
   const createMarker = (offer) => {
     const markerIcon = L.icon({
-      iconUrl: '../img/marker.svg',
+      iconUrl: MARKER_ICON,
       iconSize: [MARKER_WIDTH, MARKER_HEIGHT],
       iconAnchor: [MARKER_WIDTH / 2, MARKER_HEIGHT],
     });
@@ -101,8 +109,8 @@ const setMap = (onMapLoad) => {
   setMapDefault();
 
   L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    LAYER, {
+      attribution: ATTRIBUTION,
     },
   ).addTo(map);
 };
